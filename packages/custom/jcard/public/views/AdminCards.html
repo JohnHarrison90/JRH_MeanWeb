@@ -1,0 +1,29 @@
+<div ng-controller="cardAdmin" class="row">
+  <div class="col-md-2">
+    <ul class="list-group" >
+      <a href="#" ng-repeat="carditem in cards" ng-click="setCard(carditem)" class="list-group-item">{{carditem.titleText}}</a>
+    </ul>
+    <ul class="list-group">
+      <a href="#" ng-click="addCardView = false" class="list-group-item">+ Add New Card</a>
+    </ul>
+  </div>
+  <div class="col-md-5">
+    <div class="CardEditFields">
+      <input ng-model="card.titleText"/> </br>
+      <textarea ng-model="card.headerText"></textarea>
+      <textarea ng-model="card.bodyText"></textarea>
+    </div>
+    <div class="CardAdder" ng-hide="addCardView">
+      <button ng-click="addCard(card)">
+        Add/Edit Card
+      </button>
+      <button ng-click="showCard(card)">
+        Alert Card
+      </button>
+    </div>
+    <jcard />
+  </div>
+  <div class="col-md-5">
+    <jcard class="mobile" />
+  </div>
+</div>

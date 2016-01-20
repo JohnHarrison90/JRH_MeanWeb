@@ -1,6 +1,7 @@
 'use strict';
 
 var gulp = require('gulp'),
+  nodeInspector = require('gulp-node-inspector'),
   gulpLoadPlugins = require('gulp-load-plugins'),
   through = require('through'),
   gutil = require('gulp-util'),
@@ -16,7 +17,7 @@ var gulp = require('gulp'),
   };
 
 /*var defaultTasks = ['clean', 'jshint', 'less', 'csslint', 'devServe', 'watch'];*/
-var defaultTasks = ['coffee','clean', 'less', 'sass', 'csslint', 'devServe', 'watch'];
+var defaultTasks = ['coffee','clean', 'less', 'sass', 'csslint', 'devServe', 'watchcoffee', 'watchjshint', 'watchcsslint', 'watchless', 'watchsass', 'debug'];
 
 gulp.task('env:development', function () {
   process.env.NODE_ENV = 'development';
@@ -47,6 +48,22 @@ gulp.task('sass', function() {
   return gulp.src(paths.sass)
     .pipe(plugins.sass().on('error', plugins.sass.logError))
     .pipe(gulp.dest('./packages'));
+});
+
+gulp.task('debug', function() {
+  gulp.src([])
+    .pipe(nodeInspector({
+      debugPort: 5858,
+      webHost: 'localhost',
+      webPort: 3001,
+      saveLiveEdit: false,
+      preload: true,
+      inject: true,
+      hidden: [],
+      stackTraceLimit: 50,
+      sslKey: '',
+      sslCert: ''
+    }));
 });
 
 gulp.task('devServe', ['env:development'], function () {
@@ -87,12 +104,32 @@ gulp.task('coffee', function() {
 
 gulp.task('watch', function () {
   plugins.livereload.listen({interval:500});
-
   gulp.watch(paths.coffee,['coffee']);
   gulp.watch(paths.js, ['jshint']);
   gulp.watch(paths.css, ['csslint']).on('change', plugins.livereload.changed);
   gulp.watch(paths.less, ['less']);
   gulp.watch(paths.sass, ['sass']);
+});
+
+gulp.task('watchsass', function () {
+  gulp.watch(paths.sass, ['sass']);
+});
+
+gulp.task('watchless', function () {
+  gulp.watch(paths.less, ['less']);
+});
+
+gulp.task('watchcsslint', function () {
+  plugins.livereload.listen({interval:500});
+  gulp.watch(paths.css, ['csslint']).on('change', plugins.livereload.changed);
+});
+
+gulp.task('watchjshint', function () {
+  gulp.watch(paths.coffee,['jshint']);
+});
+
+gulp.task('watchcoffee', function () {
+  gulp.watch(paths.coffee,['coffee']);
 });
 
 function count(taskName, message) {
